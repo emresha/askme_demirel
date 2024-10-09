@@ -1,0 +1,81 @@
+body {
+    box-sizing: border-box;
+    font-family: "Fira Sans", sans-serif;
+    margin: 10px;
+    color: #d4d4d4;
+    background-color: #161616;
+}
+
+.header-container {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;  
+    border: 1px #3d3d3d solid;
+    background-color: #222222;
+    border-radius: 15px;
+}
+
+.user-data {
+    display: flex;
+    justify-self: center;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+}
+
+/*
+
+TODO: FIX IMAGE ALIGNMENT ISSUES!!!!!!!!!!!!!!
+
+*/
+
+.user-actions {
+    display: flex;
+    flex-direction: column; 
+    align-self: flex-end;
+    margin: 0 0 0 10px;
+}
+
+.user-actions p {
+    margin: 0;
+}
+
+header {
+    position: sticky;
+    top: 0;
+}
+
+.logo {
+    text-decoration: none;
+    color: #d4d4d4;
+    font-size: 40px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    padding: 10px;
+    background-color: #d4d4d4;
+    border: 1px #3d3d3d solid;
+    border-radius: 10px;
+}
+
+/* 24px size */
+.px24 {
+    font-size: 24px;
+}
+
+.ask-button {
+    cursor: pointer;
+    padding: 10px;
+    border: none;
+    color: #d4d4d4;
+    border-radius: 5px;
+    background-color: #064b00;
+    margin-left: 10px;
+}
