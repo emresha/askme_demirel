@@ -10,7 +10,7 @@ body {
     display: flex;
     flex-flow: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between; 
     padding: 20px 40px;  
     border: 1px #3d3d3d solid;
     background-color: #222222;
@@ -24,12 +24,6 @@ body {
     flex-direction: row;
     align-items: center;
 }
-
-/*
-
-TODO: FIX IMAGE ALIGNMENT ISSUES!!!!!!!!!!!!!!
-
-*/
 
 .user-actions {
     display: flex;
