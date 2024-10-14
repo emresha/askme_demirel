@@ -10,27 +10,26 @@ body {
     display: flex;
     flex-flow: row;
     align-items: center;
-    justify-content: space-between; 
-    padding: 20px 40px;  
-    border: 1px #3d3d3d solid;
+    justify-content: space-between;
+    padding: 20px 40px;
+    border: 1px solid #3d3d3d;
     background-color: #222222;
     border-radius: 15px;
 }
 
-.user-data {
+.user-data, main {
     display: flex;
-    justify-self: center;
     justify-content: center;
     flex-direction: row;
+}
+
+.user-data {
     align-items: stretch;
 }
 
 main {
     margin-top: 30px;
-    display: flex;
     align-self: center;
-    justify-content: center;
-    flex-direction: row;
 }
 
 aside {
@@ -47,13 +46,12 @@ aside .container {
     margin-bottom: 10px;
 }
 
-.tags {
+.tags, aside ul {
     text-align: center;
 }
 
 aside ul {
     padding: 0;
-    text-align: center;
     list-style-type: "✸";
 }
 
@@ -62,10 +60,8 @@ aside ul li {
     padding-left: 10px;
 }
 
-/* 
-Искусственно создадим контейнер в котором разная информация
-*/
 .cards {
+    display: flex;
     flex-direction: column;
     width: 50%;
     margin-bottom: 10px;
@@ -93,7 +89,7 @@ aside .container h2 {
     text-decoration: underline;
 }
 
-.user-data a {
+a {
     color: #838383;
 }
 
@@ -101,8 +97,8 @@ aside .container h2 {
     padding: 5px 0;
     display: flex;
     justify-content: space-between;
-    flex-direction: column; 
-    margin: 0 0 0 10px;
+    flex-direction: column;
+    margin-left: 10px;
 }
 
 .user-actions p {
@@ -113,6 +109,10 @@ header {
     filter: drop-shadow(0 4px 2px rgba(0, 0, 0, 0.75));
     position: sticky;
     top: 10px;
+}
+
+header img {
+    border-radius: 5px;
 }
 
 .logo {
@@ -129,11 +129,10 @@ header {
 .search-input {
     padding: 10px;
     background-color: #d4d4d4;
-    border: 1px #3d3d3d solid;
+    border: 1px solid #3d3d3d;
     border-radius: 10px;
 }
 
-/* 24px size */
 .px24 {
     font-size: 24px;
 }
@@ -147,7 +146,6 @@ header {
     border-radius: 0 10px 10px 0;
     background-color: #064b00;
 }
-
 
 ::-webkit-scrollbar {
     width: 12px;
