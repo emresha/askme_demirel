@@ -79,7 +79,6 @@ form {
 
 .ask-button-question {
     font-size: 20px;
-    margin-top: 15px;
     cursor: pointer;
     padding: 10px;
     font-weight: bold;
@@ -87,4 +86,10 @@ form {
     border-radius: 5px;
     color: #d4d4d4;
     border: none;
+}
+
+.error {
+    text-align: center;
+    color: #be6c6c;
+    margin-top: 5px;
 }
