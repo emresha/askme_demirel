@@ -168,3 +168,33 @@
     color: #d4d4d4;
     border: none;
 }
+
+
+.pages {
+    align-self: center;
+    width: auto;
+    justify-content: center;
+}
+
+.pages a {
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+.current {
+    cursor:default;
+    color: #d4d4d4;
+    text-decoration: none !important;
+}
+
+.all-cards {
+    margin-right: 15px;
+    width: 50%;
+    display: flex;
+    flex-flow: column;
+}
+
+.cards {
+    box-sizing: border-box;
+    width: 100%;
+}
