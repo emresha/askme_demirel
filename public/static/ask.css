@@ -1,9 +1,9 @@
 * {
-    box-sizing: border-box;
+    box-sizing: border-box !important;
 }
 
 .question {
-    margin-right: 10px;
+    margin-right: 15px;
     display: flex;
     flex-flow: column;
     width: 50%
@@ -25,26 +25,66 @@
     font-family: "Fira Sans", sans-serif;
     resize: vertical;
     padding: 5px;
+    justify-self: stretch;
     background-color: #d4d4d4;
     border: 1px solid #3d3d3d;
     border-radius: 5px;
-    width: 70%;
+    width: 100%;
 }
 
-.input-tag {
+.question input::placeholder, .question textarea::placeholder {
+    text-decoration: underline;
+}
+
+.input-field {
+    width: 100%;
     display: flex;
     flex-flow: row;
     align-items: center;
     justify-content: flex-start;
     margin-bottom: 10px;
-    width: 80%;
 }
 
 .fixed-top {
     align-self: flex-start;
 }
 
-.input-tag h3 {
-    margin: 0;
-    margin-right: 15px;
+.input-field label {
+    font-weight: bold;
+    font-size: 20px;
+    margin: 0 15px 0 0;
+}
+
+/* 
+terrible workaround, but will have to do
+for now
+TODO: find a better way to align textarea to
+other inputs
+*/
+
+.textarea-label {
+    margin-right: 18px !important;
+}
+
+form {
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+    width: 100%;
+}
+
+.cards {
+    align-items: flex-start;
+}
+
+.ask-button-question {
+    font-size: 20px;
+    margin-top: 15px;
+    cursor: pointer;
+    padding: 10px;
+    font-weight: bold;
+    background-color: #064b00;
+    border-radius: 5px;
+    color: #d4d4d4;
+    border: none;
 }
