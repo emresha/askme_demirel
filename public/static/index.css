@@ -114,3 +114,9 @@
     margin-right: 15px;
     margin-left: 15px;
 }
+
+.current {
+    cursor:default;
+    color: #d4d4d4;
+    text-decoration: none !important;
+}
