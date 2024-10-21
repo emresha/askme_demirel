@@ -30,23 +30,42 @@
     <main>
       <div class="cards">
         <div class="login-header">
-            <h1>Log In</h1>
+            <h1>Sign Up</h1>
         </div>
         <div class="login container">
-            <form action="" method="post" enctype="application/x-www-form-urlencoded">
+            <form action="" method="post" enctype="multipart/form-data">
                 <div class="input-field">
                     <label for="login">Login</label>
                     <input type="text" id="login">
                 </div>
                 <div class="input-field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email">
+                </div>
+                <div class="input-field">
+                    <label for="nickname">Nickname</label>
+                    <input type="text" id="nickname">
+                </div>
+                <div class="input-field">
                     <label for="password">Password</label>
                     <input type="password" id="password">
                 </div>
-                <div class="error">
-                    <p>Incorrect credentials.</p>
+                <div class="input-field">
+                    <label for="password">Repeat Password</label>
+                    <input type="password" id="password">
                 </div>
-                <button class="login-button">Log In</button>
-                <p style="text-align: center; margin-bottom: 0;">Not registered yet? <a href="signup.html" class="sign-up-link">Sign Up!</a></p>
+                <div class="input-field">
+                    <label for="password">Upload avatar</label>
+                    <div class="file-load-container">
+                        <input type="file" accept=".jpg,.png,.jpeg" id="password">
+                        <button>Upload</button>
+                    </div>
+                </div>
+                <div class="error">
+                    <p>This email has already been registered.</p>
+                </div>
+                <button class="login-button">Sign Up!</button>
+                <p style="text-align: center; margin-bottom: 0;">Have an account? <a href="login.html" class="login-link">Log In!</a></p>
             </form>
         </div>
       </div>
