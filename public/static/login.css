@@ -1,0 +1,64 @@
+* {
+    box-sizing: border-box;
+}
+
+main {
+    font-family: 'Fira Sans';
+}
+
+.login-header h1 {
+    margin: 0 0 25px 0;
+}
+
+form {
+    margin-top: 5px;
+    display: flex;
+    flex-flow: column;
+    justify-content: stretch;
+    width: 100%;
+}
+
+.input-field {
+    display: flex;
+    flex-flow: row;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
+
+.input-field label {
+    font-weight: bold;
+    width: 30%;
+    align-self: center;
+}
+
+.input-field input {
+    font-family: "Fira Sans", sans-serif;
+    resize: vertical;
+    padding: 5px;
+    justify-self: stretch;
+    background-color: #d4d4d4;
+    border: 1px solid #3d3d3d;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.input-field input::placeholder {
+    text-decoration: underline;
+}
+
+.error {
+    text-align: center;
+    color: #be6c6c;
+    margin-top: 5px;
+}
+
+.login-button {
+    font-size: 20px;
+    cursor: pointer;
+    padding: 10px;
+    font-weight: bold;
+    background-color: #064b00;
+    border-radius: 5px;
+    color: #d4d4d4;
+    border: none;
+}
