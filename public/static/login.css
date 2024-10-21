@@ -21,13 +21,13 @@ form {
 .input-field {
     display: flex;
     flex-flow: row;
-    justify-content: flex-start;
+    justify-content: space-between;
     margin-bottom: 10px;
 }
 
 .input-field label {
-    font-weight: bold;
-    width: 30%;
+    font-weight: bold; 
+    width: 30%;   
     align-self: center;
 }
 
@@ -40,6 +40,7 @@ form {
     border: 1px solid #3d3d3d;
     border-radius: 5px;
     width: 100%;
+    max-width: 400px;
 }
 
 .input-field input::placeholder {
@@ -49,7 +50,10 @@ form {
 .error {
     text-align: center;
     color: #be6c6c;
-    margin-top: 5px;
+}
+
+.error p {
+    margin-top: 10px;
 }
 
 .login-button {
@@ -61,4 +65,9 @@ form {
     border-radius: 5px;
     color: #d4d4d4;
     border: none;
+}
+
+.sign-up-link {
+    cursor: pointer;
+    text-decoration: underline;
 }
