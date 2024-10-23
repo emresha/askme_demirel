@@ -111,3 +111,7 @@ form {
     color: #d4d4d4;
     border: none;
 }
+
+.unsigned span a {
+    margin-left: 10px;
+}
