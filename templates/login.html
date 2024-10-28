@@ -1,34 +1,14 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <link rel="stylesheet" href="static/base.css">
-    <link rel="stylesheet" href="static/login.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <title>AskMe</title>
-  </head>
-  <body>
-    <header>
-      <div class="header container">
-          <a class="logo" href="index.html">AskMe</a>
-          <div class="search-bar">
-            <input type="text" placeholder="Search..." class="search-input px24"><button class="ask-button px24">Ask!</button>
-          </div>
-          <div class="user-data">
-            <div class="user-actions unsigned">
-              <span>
-                <a href="login.html">log in</a>
-                <a href="signup.html">register</a>
-              </span>
-            </div>
-          </div>
-      </div>
-    </header>
-    <main>
-      <div class="cards">
+{% extends "base.html" %}
+
+{% block style %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'login.css' %}">
+
+{% endblock %}
+
+{% block content %}
+<div class="cards">
         <div class="login-header">
             <h1>Log In</h1>
         </div>
@@ -50,36 +30,4 @@
             </form>
         </div>
       </div>
-      <aside>
-        <div class="popular-tags container">
-          <h2>Popular Tags</h2>
-          <div class="tags">
-            <span>history</span>
-            <span>history</span>
-            <span>history</span>
-            <span>history</span>
-            <span>history</span>
-            <span>history</span>
-            <span>history</span>
-            <span>history</span>
-            <span>history</span>
-            <span>history</span>
-            <span>history</span>
-          </div>
-        </div>
-        <div class="best-members container">
-          <h2>Best Members</h2>
-          <ul>
-            <li>user 1</li>
-            <li>user 1</li>
-            <li>user 1</li>
-            <li>user 1</li>
-            <li>user 1</li>
-            <li>user 1</li>
-            <li>user 1</li>
-          </ul>
-        </div>
-      </aside>
-    </main>
-  </body>
-</html>
+{% endblock %}
