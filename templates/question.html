@@ -14,7 +14,7 @@
                         <div class="image-like-container">
                             <img height="100" width="100" src="https://placehold.co/500" alt="user image">
                             <div class="likes">
-                                <div class="number">-1233</div>
+                                <div class="number">{{question.likes}}</div>
                                 <div class="arrows-container">
                                     <div class="arrow">▲</div>
                                     <div class="arrow">▼</div>
@@ -23,19 +23,17 @@
                         </div>
                     </div>
                     <div class="description">
-                        <h1>How to restore deleted database?</h1>
-                        <p>I'm just an intern and I accidentally rm -rf'ed the whole production database and I was
-                            wondering if you guys could help me with my problem or I will probably get fired.<br>
-                            I don't know what to do. The error message I get states that the production environment is
-                            unable to establish a connection to the PostgreSQL database.</p>
+                        <h1>{{question.title}}</h1>
+                        <p>{{question.text}}</p>
                     </div>
                 </div>
             </div>
             <div class="actions-and-tags">
                 <div class="question-tags">
                     <p>Tags: </p>
-                    <a href="">Urgent</a>
-                    <a href="">Database</a>
+                    {% for tag in question.tags %}
+                        <a href="/tag/{{tag|lower}}">{{tag}}</a>
+                    {% endfor %}
                 </div>
             </div>
             <hr class="line">

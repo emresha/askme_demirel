@@ -8,14 +8,19 @@
 {% block content %}
       <div class="cards">
         <div class="questions-header">
-            <h1>New Questions</h1><a href="">Hot Questions</a>
+            {% if hot %}
+            <h1>Hot Questions</h1><a href="/">New Questions</a>
+            {% else %}
+            <h1>New Questions</h1><a href="/hot">Hot Questions</a>
+            {% endif %}
         </div>
+        {% for question in questions %}
         <div class="question-card container">
             <div class="avatar-and-description">
                 <div class="image-like-container">
                 <img height="80" width="80" src="https://placehold.co/500" alt="user image">
                     <div class="likes">
-                        <div class="number">-1233</div>
+                        <div class="number">{{question.likes}}</div>
                         <div class="arrows-container">
                             <div class="arrow">▲</div>
                             <div class="arrow">▼</div>
@@ -24,104 +29,22 @@
                 </div>
                 <div class="description-actions">
                     <div class="description">
-                        <h2>How to restore deleted database?</h2>
-                        <p>I'm just an intern and I accidentally rm -rf'ed the whole production database and I was wondering if...</p>
+                        <h2>{{question.title}}</h2>
+                        <p>{{question.text}}</p>
                     </div>
                     <div class="actions-and-tags">
-                        <a href="">Answer (125)</a>
+                        <a href="/question/{{question.id}}">Answer (125)</a>
                         <div class="question-tags">
                             <p>Tags: </p>
-                            <a href="">Urgent</a>
-                            <a href="">Database</a>
+                            {% for tag in question.tags %}
+                            <a href="/tag/{{tag|lower}}">{{tag}}</a>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="question-card container">
-            <div class="avatar-and-description">
-                <div class="image-like-container">
-                <img height="80" width="80" src="https://placehold.co/500" alt="user image">
-                    <div class="likes">
-                        <div class="number">5</div>
-                        <div class="arrows-container">
-                            <div class="arrow">▲</div>
-                            <div class="arrow">▼</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="description-actions">
-                    <div class="description">
-                        <h2>Am I real?</h2>
-                        <p>I don't know what's up with me, but I feel like I am living in some kind of a simulation or something like that but I don't know how to...</p>
-                    </div>
-                    <div class="actions-and-tags">
-                        <a href="">Answer (5)</a>
-                        <div class="question-tags">
-                            <p>Tags: </p>
-                            <a href="">Reality</a>
-                            <a href="">Philosophy</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="question-card container">
-            <div class="avatar-and-description">
-                <div class="image-like-container">
-                <img height="80" width="80"  src="https://placehold.co/500" alt="user image">
-                    <div class="likes">
-                        <div class="number">71</div>
-                        <div class="arrows-container">
-                            <div class="arrow">▲</div>
-                            <div class="arrow">▼</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="description-actions">
-                    <div class="description">
-                        <h2>Does anybody else have this annoying error?</h2>
-                        <p>It says that there is "insufficient funds" on my credit card when I try to buy one billion...</p>
-                    </div>
-                    <div class="actions-and-tags">
-                        <a href="">Answer (12)</a>
-                        <div class="question-tags">
-                            <p>Tags: </p>
-                            <a href="">Urgent</a>
-                            <a href="">Payments</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="question-card container">
-            <div class="avatar-and-description">
-                <div class="image-like-container">
-                <img height="80" width="80" src="https://placehold.co/500" alt="user image">
-                    <div class="likes">
-                        <div class="number">0</div>
-                        <div class="arrows-container">
-                            <div class="arrow">▲</div>
-                            <div class="arrow">▼</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="description-actions">
-                    <div class="description">
-                        <h2>How to fix broken HDD?</h2>
-                        <p>I raged after playing this game and I threw my disk into a wall and now my pc won't boot...</p>
-                    </div>
-                    <div class="actions-and-tags">
-                        <a href="">Answer (0)</a>
-                        <div class="question-tags">
-                            <p>Tags: </p>
-                            <a href="">Urgent</a>
-                            <a href="">Hardware</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
         <div class="pages container">
             <div class="page"><a href="" class="current">1</a></div>
             <div class="page"><a href="">2</a></div>

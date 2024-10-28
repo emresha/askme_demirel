@@ -15,7 +15,6 @@
     flex-flow: row;
 }
 .description-actions {
-    width: 100%;
     display: flex;
     flex-flow: row;
     justify-content: space-between;
@@ -46,8 +45,13 @@
 }
 
 .common-container {
+    width: 100%;
+    word-break: normal;
     display: flex;
+    box-sizing: border-box;
     flex-flow: row;
+    justify-content: flex-start;
+    align-items: flex-start;
 }
 
 .image-like-container {
