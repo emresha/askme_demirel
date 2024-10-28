@@ -1,0 +1,23 @@
+<div class="pages container">
+    {% if questions.has_previous %}
+        <div class="page"><a href="?page={{ questions.previous_page_number }}"><<</a></div>
+        {% if questions.previous_page_number != 1 %}
+        <div class="page"><a href="?page=1">1</a></div>
+        <div class="page"><a>...</a></div>
+        <div class="page"><a href="?page={{ questions.previous_page_number }}">{{questions.previous_page_number}}</a></div>
+        {% else %}
+        <div class="page"><a href="?page=1">1</a></div>
+        {% endif %}
+    {% endif %}
+    <div class="page"><a href="" class="current">{{ questions.number }}</a></div>
+    {% if questions.has_next %}
+        {% if questions.next_page_number != questions.paginator.num_pages %}
+        <div class="page"><a href="?page={{ questions.next_page_number }}">{{questions.next_page_number}}</a></div>
+        <div class="page"><a>...</a></div>
+        <div class="page"><a href="?page={{questions.paginator.num_pages}}">{{questions.paginator.num_pages}}</a></div>
+        {% else %}
+        <div class="page"><a href="?page={{questions.paginator.num_pages}}">{{questions.paginator.num_pages}}</a></div>
+        {% endif %}
+        <div class="page"><a href="?page={{questions.next_page_number}}">>></a></div>
+    {% endif %}
+</div>

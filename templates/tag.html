@@ -41,12 +41,6 @@
             </div>
         </div>
         {% endfor %}
-        <div class="pages container">
-            <div class="page"><a href="" class="current">1</a></div>
-            <div class="page"><a href="">2</a></div>
-            <div class="page"><a href="">3</a></div>
-            <div class="page"><a href="">...</a></div>
-            <div class="page"><a href="">100</a></div>
-        </div>
+        {% include 'paginator.html' %}
       </div>
 {% endblock %}

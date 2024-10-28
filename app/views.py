@@ -1,14 +1,13 @@
 from django.shortcuts import render
 from django.http import Http404
-from askme_demirel.settings import BASE_DIR
+from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage, PageNotAnInteger, InvalidPage
 from random import choice, randint
-
-# Create your views here.
 
 tags = ["Urgent", "Philosophy", "Games", "Physics", "Programming", "Common"]
 
 questions = []
-for i in range(1,30):
+for i in range(1,100):
   questions.append({
     'title': 'title ' + str(i),
     'id': i,
@@ -17,19 +16,39 @@ for i in range(1,30):
     'likes': randint(-100, 100)
   })
 
+NUM_PAGES = 5
+
+def paginate(objects_list, request, per_page=5):
+    try:
+        page_num = request.GET.get('page')
+        if not page_num:
+            page_num = 1
+        else:
+            page_num = int(page_num)
+    except ValueError:
+        page_num = 1
+        
+    p = Paginator(objects_list, per_page)
+    try:
+        question_page = p.page(page_num)
+    except (EmptyPage, PageNotAnInteger, InvalidPage) as e:
+        question_page = p.page(1)
+        
+    return question_page
 
 def index(request):
-    return render(request, "index.html", context={'questions': questions[:10]})
+    return render(request, "index.html", context={'questions': paginate(questions, request)})
 
 def hot(request):
-   return render(request, "index.html", context={'questions': sorted(questions[:10],
-                                    key=lambda x: x['likes'], reverse=True), 'hot': True})
+    hot_questions = sorted(questions, key=lambda x: x['likes'], reverse=True)
+    return render(request, "index.html", context={'questions': paginate(hot_questions, request), 'hot': True})
 
 def tag(request, tag_name):
     tag_questions = list(filter(lambda x: tag_name.title() in x['tags'], questions))
     if not tag_questions:
         raise Http404("Tag not found")
-    return render(request, "tag.html", context={'questions': tag_questions, 'tag': tag_name})
+    
+    return render(request, "tag.html", context={'questions': paginate(tag_questions, request), 'tag': tag_name})
 
 def ask(request):
     return render(request, "ask.html")
