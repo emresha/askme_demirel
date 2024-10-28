@@ -16,8 +16,9 @@ for i in range(1,100):
     'likes': randint(-100, 100)
   })
 
-NUM_PAGES = 5
-
+"""
+Функция пагинации
+"""
 def paginate(objects_list, request, per_page=5):
     try:
         page_num = request.GET.get('page')
