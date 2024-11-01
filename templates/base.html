@@ -14,16 +14,16 @@
   <body>
     <header>
       <div class="header container">
-          <a class="logo" href="/">AskMe</a>
+          <a class="logo" href="{% url 'index' %}">AskMe</a>
           <div class="search-bar">
-            <input type="text" placeholder="Search..." class="search-input px24"><button onclick="window.location.href='/ask'" class="ask-button px24">Ask!</button>
+            <input type="text" placeholder="Search..." class="search-input px24"><button onclick="window.location.href='{% url 'ask' %}'" class="ask-button px24">Ask!</button>
           </div>
           <div class="user-data">
             <img height="55" width="55" src="https://placehold.co/200" alt="user image">
             <div class="user-actions">
               <p>Username</p>
               <span>
-                <a href="/settings">settings</a>
+                <a href="{% url 'settings' %}">settings</a>
                 <a href="/logout">log out</a>
               </span>
             </div>

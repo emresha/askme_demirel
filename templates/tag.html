@@ -29,11 +29,13 @@
                         <p>{{question.text}}</p>
                     </div>
                     <div class="actions-and-tags">
-                        <a href="/question/{{question.id}}">Answer (125)</a>
+                        <a href="{% url 'question' id=question.id %}">Answer (125)</a>
+<!--                        <a href="/question/{{question.id}}">Answer (125)</a>-->
                         <div class="question-tags">
                             <p>Tags: </p>
                             {% for tag in question.tags %}
-                            <a href="/tag/{{tag|lower}}">{{tag}}</a>
+<!--                            <a href="/tag/{{tag|lower}}">{{tag}}</a>-->
+                            <a href="{% url 'tag' tag_name=tag|lower %}">{{tag}}</a>
                             {% endfor %}
                         </div>
                     </div>

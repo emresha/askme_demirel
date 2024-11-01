@@ -20,14 +20,7 @@ for i in range(1,100):
 Функция пагинации
 """
 def paginate(objects_list, request, per_page=5):
-    try:
-        page_num = request.GET.get('page')
-        if not page_num:
-            page_num = 1
-        else:
-            page_num = int(page_num)
-    except ValueError:
-        page_num = 1
+    page_num = request.GET.get('page')
         
     p = Paginator(objects_list, per_page)
     try:

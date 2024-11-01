@@ -91,13 +91,8 @@
                 <button class="answer-button">Answer!</button>
             </div>
         </div>
-        <div class="pages container">
-            <div class="page"><a href="" class="current">1</a></div>
-            <div class="page"><a href="">2</a></div>
-            <div class="page"><a href="">3</a></div>
-            <div class="page"><a href="">...</a></div>
-            <div class="page"><a href="">100</a></div>
-        </div>
+<!-- здесь теперь пагинатор, но он не будет работать, т.к. у страницы вопроса нет других страниц (пока, по крайней мере) -->
+        {% include 'paginator.html' %}
         </div>
         </div>
     </div>
