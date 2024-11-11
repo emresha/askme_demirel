@@ -14,7 +14,7 @@
                         <div class="image-like-container">
                             <img height="100" width="100" src="https://placehold.co/500" alt="user image">
                             <div class="likes">
-                                <div class="number">{{question.likes}}</div>
+                                <div class="number">{{question.like_count}}</div>
                                 <div class="arrows-container">
                                     <div class="arrow">▲</div>
                                     <div class="arrow">▼</div>
@@ -23,15 +23,15 @@
                         </div>
                     </div>
                     <div class="description">
-                        <h1>{{question.title}}</h1>
-                        <p>{{question.text}}</p>
+                        <h1>{{question.header}}</h1>
+                        <p>{{question.description}}</p>
                     </div>
                 </div>
             </div>
             <div class="actions-and-tags">
                 <div class="question-tags">
                     <p>Tags: </p>
-                    {% for tag in question.tags %}
+                    {% for tag in question.tags.all %}
                         <a href="/tag/{{tag|lower}}">{{tag}}</a>
                     {% endfor %}
                 </div>
@@ -39,6 +39,10 @@
             <hr class="line">
             <div class="answers-container">
                 <h2>Answers</h2>
+                {% if not comments %}
+                <h4>Nobody has answered yet, so be the first!</h4>
+                {% else %}
+                {% for comment in comments %}
                 <div class="answer">
                     <div class="avatar-and-description">
                         <div class="image-like-container">
@@ -53,7 +57,7 @@
                         </div>
                         <div class="answer-actions">
                             <div class="description">
-                                <p>Honestly, your situation seems hopeless. My best wishes to you. If you somehow manage not to get fired, please tell me how.</p>
+                                <p>{{ comment.content }}</p>
                                 <div class="correct-checkbox">
                                     <input type="checkbox">
                                     <span>Correct</span>
@@ -62,29 +66,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="answer">
-                <div class="avatar-and-description">
-                    <div class="image-like-container">
-                        <img height="80" width="80" src="https://placehold.co/500" alt="user image">
-                        <div class="likes">
-                            <div class="number">0</div>
-                            <div class="arrows-container">
-                                <div class="arrow">▲</div>
-                                <div class="arrow">▼</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="answer-actions">
-                        <div class="description">
-                            <p>You should look for backups as soon as possible. Some of them might be fresh enough so that nobody notices if you use the backup database instead of the real one.</p>
-                            <div class="correct-checkbox">
-                                <input checked type="checkbox">
-                                <span>Correct</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            {% endfor %}
+            {% endif %}
             </div>
             <div class="user-answer">
                 <textarea rows="5" placeholder="Answer here..."></textarea>
@@ -92,7 +75,7 @@
             </div>
         </div>
 <!-- здесь теперь пагинатор, но он не будет работать, т.к. у страницы вопроса нет других страниц (пока, по крайней мере) -->
-        {% include 'paginator.html' %}
+        {% include 'comments_paginator.html' %}
         </div>
         </div>
     </div>

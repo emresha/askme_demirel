@@ -11,6 +11,20 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.username
 
+class PostManager(models.Manager):
+    def get_new(self):
+        return self.order_by('-created_at')
+    
+    def get_hot(self):
+        return self.order_by('-like_count')
+    
+    def get_by_tag(self, tag):
+        return self.filter(tags__name=tag)
+    
+    def get_by_id(self, id):
+        return self.get(id=id)
+        
+
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -29,6 +43,8 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    objects = PostManager()
+
     def __str__(self):
         return self.header
 
@@ -44,6 +60,10 @@ class PostLike(models.Model):
     def __str__(self):
         return f"{self.user.username} liked {self.post.header}"
 
+class CommentManager(models.Manager):
+    def get_comments_by_post(self, post):
+        return self.filter(post=post).order_by('-created_at')
+
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='comments')
@@ -51,6 +71,8 @@ class Comment(models.Model):
     like_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = CommentManager()
 
     def __str__(self):
         return f"Comment by {self.user.username} on {self.post.header}"

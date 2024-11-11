@@ -1,20 +1,10 @@
 from django.shortcuts import render
 from django.http import Http404
+from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist, FieldDoesNotExist
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage, PageNotAnInteger, InvalidPage
+from app.models import Post, Comment
 from random import choice, randint
-
-tags = ["Urgent", "Philosophy", "Games", "Physics", "Programming", "Common"]
-
-questions = []
-for i in range(1,100):
-  questions.append({
-    'title': 'title ' + str(i),
-    'id': i,
-    'text': 'text' + str(i),
-    'tags': [choice(tags), choice(tags)],
-    'likes': randint(-100, 100)
-  })
 
 """
 Функция пагинации
@@ -31,14 +21,15 @@ def paginate(objects_list, request, per_page=5):
     return question_page
 
 def index(request):
+    questions = Post.objects.get_new()
     return render(request, "index.html", context={'questions': paginate(questions, request)})
 
 def hot(request):
-    hot_questions = sorted(questions, key=lambda x: x['likes'], reverse=True)
+    hot_questions = Post.objects.get_hot()
     return render(request, "index.html", context={'questions': paginate(hot_questions, request), 'hot': True})
 
 def tag(request, tag_name):
-    tag_questions = list(filter(lambda x: tag_name.title() in x['tags'], questions))
+    tag_questions = Post.objects.get_by_tag(tag_name)
     if not tag_questions:
         raise Http404("Tag not found")
     
@@ -55,10 +46,13 @@ def signup(request):
 
 def question(request, id):
     try:
-        question = questions[id - 1]
-    except IndexError:
+        question = Post.objects.get_by_id(id)
+    except Exception as e:
         raise Http404("Question not found.")
-    return render(request, "question.html", context={'question': question, 'id': id})
+    
+    comments = Comment.objects.get_comments_by_post(question)
+    # print(len(comments))
+    return render(request, "question.html", context={'question': question, 'id': id, 'comments': paginate(comments, request)})
 
 def settings(request):
     return render(request, "settings.html")

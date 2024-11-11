@@ -16,7 +16,7 @@
                 <div class="image-like-container">
                 <img height="80" width="80" src="https://placehold.co/500" alt="user image">
                     <div class="likes">
-                        <div class="number">{{question.likes}}</div>
+                        <div class="number">{{question.like_count}}</div>
                         <div class="arrows-container">
                             <div class="arrow">▲</div>
                             <div class="arrow">▼</div>
@@ -25,15 +25,15 @@
                 </div>
                 <div class="description-actions">
                     <div class="description">
-                        <h2>{{question.title}}</h2>
-                        <p>{{question.text}}</p>
+                        <h2>{{question.header}}</h2>
+                        <p>{{question.description}}</p>
                     </div>
                     <div class="actions-and-tags">
-                        <a href="{% url 'question' id=question.id %}">Answer (125)</a>
+                        <a href="{% url 'question' id=question.id %}">Answer ({{ question.comments_count }})</a>
 <!--                        <a href="/question/{{question.id}}">Answer (125)</a>-->
                         <div class="question-tags">
                             <p>Tags: </p>
-                            {% for tag in question.tags %}
+                            {% for tag in question.tags.all %}
 <!--                            <a href="/tag/{{tag|lower}}">{{tag}}</a>-->
                             <a href="{% url 'tag' tag_name=tag|lower %}">{{tag}}</a>
                             {% endfor %}

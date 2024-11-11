@@ -1,0 +1,25 @@
+{% if comments.paginator.num_pages > 1 %}
+<div class="pages container">
+    {% if comments.has_previous %}
+        <div class="page"><a href="?page={{ comments.previous_page_number }}"><<</a></div>
+        {% if comments.previous_page_number != 1 %}
+        <div class="page"><a href="?page=1">1</a></div>
+        <div class="page"><a>...</a></div>
+        <div class="page"><a href="?page={{ comments.previous_page_number }}">{{comments.previous_page_number}}</a></div>
+        {% else %}
+        <div class="page"><a href="?page=1">1</a></div>
+        {% endif %}
+    {% endif %}
+    <div class="page"><a href="" class="current">{{ comments.number }}</a></div>
+    {% if comments.has_next %}
+        {% if comments.next_page_number != comments.paginator.num_pages %}
+        <div class="page"><a href="?page={{ comments.next_page_number }}">{{comments.next_page_number}}</a></div>
+        <div class="page"><a>...</a></div>
+        <div class="page"><a href="?page={{comments.paginator.num_pages}}">{{comments.paginator.num_pages}}</a></div>
+        {% else %}
+        <div class="page"><a href="?page={{comments.paginator.num_pages}}">{{comments.paginator.num_pages}}</a></div>
+        {% endif %}
+        <div class="page"><a href="?page={{comments.next_page_number}}">>></a></div>
+    {% endif %}
+</div>
+{% endif %}
