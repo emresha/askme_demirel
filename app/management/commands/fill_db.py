@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.db import transaction
-from app.models import Post, Comment, UserProfile, Tag, PostLike, CommentLike, PostTag
+# from app.models import Post, Comment, UserProfile, Tag, PostLike, CommentLike, PostTag
 import random
 from multiprocessing import Pool, current_process
 
@@ -12,6 +12,7 @@ from multiprocessing import Pool, current_process
 """
 
 def create_posts(start, end, user_profiles, tags):
+    from app.models import Post, PostTag
     posts, post_tags = [], []
     batch_size = 5000
 
@@ -35,6 +36,7 @@ def create_posts(start, end, user_profiles, tags):
     print(f"Process {current_process().name} completed creating posts.")
 
 def create_comments(start, end, user_profiles):
+    from app.models import Post, Comment
     posts = list(Post.objects.all())
     comments = []
     batch_size = 5000
@@ -54,6 +56,7 @@ def create_comments(start, end, user_profiles):
     print(f"Process {current_process().name} completed creating comments.")
 
 def create_likes(user_profiles):
+    from app.models import Post, Comment, PostLike, CommentLike
     posts = list(Post.objects.all())
     comments = list(Comment.objects.all())
     post_likes, comment_likes = [], []
@@ -98,6 +101,8 @@ class Command(BaseCommand):
         parser.add_argument('--num-processes', type=int, default=1) # можно распараллелить, по желанию, не гарантирую, что работает всегда
 
     def handle(self, *args, **options):
+        from app.models import UserProfile, Tag
+        
         ratio = options['ratio']
         num_processes = options['num_processes']
 
