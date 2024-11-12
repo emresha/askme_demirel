@@ -5,17 +5,12 @@ from django.db import transaction
 import random
 from multiprocessing import Pool, current_process
 
-"""
-Заполнение базы данных.
-Честно говоря, мне стыдно говорить сколько я с этим мучился.
-Зато работает теперь достаточно быстро и при этом не сильно загружает оперативную память.
-"""
 
 def create_posts(start, end, user_profiles, tags):
     from app.models import Post, PostTag
     posts, post_tags = [], []
     batch_size = 5000
-
+    
     print(f"Process {current_process().name} started creating posts.")
     for i in range(start, end):
         author = random.choice(user_profiles)
@@ -45,7 +40,7 @@ def create_comments(start, end, user_profiles):
     for i in range(start, end):
         post = random.choice(posts)
         user = random.choice(user_profiles)
-        post_comments = [Comment(user=user, post=post, content=f'Comment {i}.{j}') for j in range(10)]
+        post_comments = [Comment(user=user, post=post, is_correct=random.choice([True, False]), content=f'Comment {i}.{j}') for j in range(10)]
         comments.extend(post_comments)
 
         if len(comments) >= batch_size:

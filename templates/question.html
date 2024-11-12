@@ -59,7 +59,11 @@
                             <div class="description">
                                 <p>{{ comment.content }}</p>
                                 <div class="correct-checkbox">
+                                    {% if comment.is_correct %}
+                                    <input type="checkbox" checked>
+                                    {% else %}
                                     <input type="checkbox">
+                                    {% endif %}
                                     <span>Correct</span>
                                 </div>
                             </div>

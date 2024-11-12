@@ -68,6 +68,7 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
+    is_correct = models.BooleanField(default=False)
     like_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
