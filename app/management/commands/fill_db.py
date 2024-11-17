@@ -76,15 +76,13 @@ def create_likes(user_profiles):
                 liked_comments.add(comment)
 
         if len(post_likes) >= batch_size:
-            with transaction.atomic():
-                PostLike.objects.bulk_create(post_likes)
-                CommentLike.objects.bulk_create(comment_likes)
+            PostLike.objects.bulk_create(post_likes)
+            CommentLike.objects.bulk_create(comment_likes)
             post_likes.clear()
             comment_likes.clear()
 
-    with transaction.atomic():
-        PostLike.objects.bulk_create(post_likes)
-        CommentLike.objects.bulk_create(comment_likes)
+    PostLike.objects.bulk_create(post_likes)
+    CommentLike.objects.bulk_create(comment_likes)
 
     print("Completed creating likes.")
 
@@ -97,6 +95,16 @@ class Command(BaseCommand):
         from app.models import UserProfile, Tag
         
         ratio = options['ratio']
+
+        if ratio < 10:
+            self.stdout.write(self.style.ERROR('RATIO LESS THAN 10 IS NOT ALLOWED.'))
+            """
+            Это сделано для того, чтобы не было бесконечных циклов а также ошибок из-за слишком маленького количества тегов (<3).
+            Если кол-во тегов (== ratio) < 3, то не получится каждому посту присвоить 3 тега.
+            Если ratio < 10, то возникают бесконечные циклы, которые были созданы для предотвращения повторяющихся элементов (которые вызывают ошибки),
+            но здесь, т.к. элементов очень мало, повторяющиеся элементы будут всегда, что приводит к бесконечному циклу.
+            """
+            exit(1)
 
         print("Creating users and profiles...")
         users = [User(username=f'user{i}', password=f'password{i}') for i in range(ratio)]
