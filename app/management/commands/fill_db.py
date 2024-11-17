@@ -1,9 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.db import transaction
-# from app.models import Post, Comment, UserProfile, Tag, PostLike, CommentLike, PostTag
 import random
-from multiprocessing import Pool, current_process
 
 
 def create_posts(start, end, user_profiles, tags):
@@ -11,7 +9,7 @@ def create_posts(start, end, user_profiles, tags):
     posts, post_tags = [], []
     batch_size = 5000
     
-    print(f"Process {current_process().name} started creating posts.")
+    print("Started creating posts.")
     for i in range(start, end):
         author = random.choice(user_profiles)
         post = Post(user=author, header=f'Question {i}?', description=f'Description {i}')
@@ -28,7 +26,8 @@ def create_posts(start, end, user_profiles, tags):
 
     Post.objects.bulk_create(posts)
     PostTag.objects.bulk_create(post_tags)
-    print(f"Process {current_process().name} completed creating posts.")
+    print("Completed creating posts.")
+
 
 def create_comments(start, end, user_profiles):
     from app.models import Post, Comment
@@ -36,7 +35,7 @@ def create_comments(start, end, user_profiles):
     comments = []
     batch_size = 5000
 
-    print(f"Process {current_process().name} started creating comments.")
+    print("Started creating comments.")
     for i in range(start, end):
         post = random.choice(posts)
         user = random.choice(user_profiles)
@@ -48,7 +47,8 @@ def create_comments(start, end, user_profiles):
             comments.clear()
 
     Comment.objects.bulk_create(comments)
-    print(f"Process {current_process().name} completed creating comments.")
+    print("Completed creating comments.")
+
 
 def create_likes(user_profiles):
     from app.models import Post, Comment, PostLike, CommentLike
@@ -57,7 +57,7 @@ def create_likes(user_profiles):
     post_likes, comment_likes = [], []
     batch_size = 2000
 
-    print(f"Process {current_process().name} started creating likes.")
+    print("Started creating likes.")
 
     for user in user_profiles:
         liked_posts = set()
@@ -86,39 +86,32 @@ def create_likes(user_profiles):
         PostLike.objects.bulk_create(post_likes)
         CommentLike.objects.bulk_create(comment_likes)
 
-    print(f"Process {current_process().name} completed creating likes.")
-
+    print("Completed creating likes.")
 
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('ratio', type=int)
-        parser.add_argument('--num-processes', type=int, default=1) # можно распараллелить, по желанию, не гарантирую, что работает всегда
 
     def handle(self, *args, **options):
         from app.models import UserProfile, Tag
         
         ratio = options['ratio']
-        num_processes = options['num_processes']
 
+        print("Creating users and profiles...")
         users = [User(username=f'user{i}', password=f'password{i}') for i in range(ratio)]
         User.objects.bulk_create(users)
         user_profiles = UserProfile.objects.bulk_create([UserProfile(user=user, username=user.username) for user in User.objects.all()])
         tags = Tag.objects.bulk_create([Tag(name=f'tag{i}') for i in range(ratio)])
+        print("Completed creating users and profiles.")
 
-        chunk_size = (ratio * 10) // num_processes
+        print("Creating posts...")
+        create_posts(0, ratio * 10, user_profiles, tags)
 
-        post_chunks = [(i * chunk_size, (i + 1) * chunk_size, user_profiles, tags) for i in range(num_processes)]
-        with Pool(processes=num_processes) as pool:
-            pool.starmap(create_posts, post_chunks)
+        print("Creating comments...")
+        create_comments(0, ratio * 10, user_profiles)
 
-        comment_chunks = [(i * chunk_size, (i + 1) * chunk_size, user_profiles) for i in range(num_processes)]
-        with Pool(processes=num_processes) as pool:
-            pool.starmap(create_comments, comment_chunks)
-
-        user_chunks = [user_profiles[i::num_processes] for i in range(num_processes)]
-        with Pool(processes=num_processes) as pool:
-            pool.map(create_likes, user_chunks)
-
+        print("Creating likes...")
+        create_likes(user_profiles)
 
         self.stdout.write(self.style.SUCCESS('Database fill completed.'))
