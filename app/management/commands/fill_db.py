@@ -1,14 +1,17 @@
+import django
+
+django.setup()
+
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from django.db import transaction
 import random
-
+from time import time
 
 def create_posts(start, end, user_profiles, tags):
     from app.models import Post, PostTag
     posts, post_tags = [], []
     batch_size = 5000
-    
+        
     print("Started creating posts.")
     for i in range(start, end):
         author = random.choice(user_profiles)
@@ -99,12 +102,14 @@ class Command(BaseCommand):
         if ratio < 10:
             self.stdout.write(self.style.ERROR('RATIO LESS THAN 10 IS NOT ALLOWED.'))
             """
-            Это сделано для того, чтобы не было бесконечных циклов а также ошибок из-за слишком маленького количества тегов (<3).
+            Это сделано для того, чтобы не было бесконечных циклов, а также ошибок из-за слишком маленького количества тегов (<3).
             Если кол-во тегов (== ratio) < 3, то не получится каждому посту присвоить 3 тега.
             Если ratio < 10, то возникают бесконечные циклы, которые были созданы для предотвращения повторяющихся элементов (которые вызывают ошибки),
             но здесь, т.к. элементов очень мало, повторяющиеся элементы будут всегда, что приводит к бесконечному циклу.
             """
             exit(1)
+
+        begin = time()
 
         print("Creating users and profiles...")
         users = [User(username=f'user{i}', password=f'password{i}') for i in range(ratio)]
@@ -122,4 +127,6 @@ class Command(BaseCommand):
         print("Creating likes...")
         create_likes(user_profiles)
 
-        self.stdout.write(self.style.SUCCESS('Database fill completed.'))
+        end = time() - begin
+
+        self.stdout.write(self.style.SUCCESS(f'Database fill completed in {end} seconds.'))
