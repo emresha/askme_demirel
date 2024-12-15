@@ -3,13 +3,12 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    username = models.CharField(max_length=255, unique=True)
     avatar = models.ImageField(upload_to='uploads/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.username
+        return self.user.username
 
 class PostManager(models.Manager):
     def get_new(self):
@@ -62,7 +61,7 @@ class PostLike(models.Model):
 
 class CommentManager(models.Manager):
     def get_comments_by_post(self, post):
-        return self.filter(post=post).order_by('-created_at')
+        return self.filter(post=post).order_by('created_at')
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')

@@ -13,18 +13,21 @@
             <h1>Log In</h1>
         </div>
         <div class="login container">
-            <form action="" method="post" enctype="application/x-www-form-urlencoded">
+            <form action="{% url 'login' %}" method="POST" enctype="application/x-www-form-urlencoded">
+                {% csrf_token %}
                 <div class="input-field">
-                    <label for="login">Login</label>
-                    <input type="text" id="login">
+                    <label for="username">Login</label>
+                    <input required value="{{ login }}" type="text" name="username" id="username">
                 </div>
                 <div class="input-field">
-                    <label for="password">Password</label>
-                    <input type="password" id="password">
+                    <label required for="password">Password</label>
+                    <input type="password" name="password" id="password">
                 </div>
+                {% if error %}
                 <div class="error">
-                    <p>Incorrect credentials.</p>
+                    <p>{{ error }}</p>
                 </div>
+                {% endif %}
                 <button class="login-button">Log In</button>
                 <p style="text-align: center; margin-bottom: 0;">Not registered yet? <a href="{% url 'signup' %}" class="sign-up-link">Sign Up!</a></p>
             </form>

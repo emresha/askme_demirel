@@ -114,7 +114,7 @@ class Command(BaseCommand):
         print("Creating users and profiles...")
         users = [User(username=f'user{i}', password=f'password{i}') for i in range(ratio)]
         User.objects.bulk_create(users)
-        user_profiles = UserProfile.objects.bulk_create([UserProfile(user=user, username=user.username) for user in User.objects.all()])
+        user_profiles = UserProfile.objects.bulk_create([UserProfile(user=user) for user in User.objects.all()])
         tags = Tag.objects.bulk_create([Tag(name=f'tag{i}') for i in range(ratio)])
         print("Completed creating users and profiles.")
 

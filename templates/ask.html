@@ -13,21 +13,27 @@
             <h1>New Question</h1>
         </div>
           <div class="cards container">
-            <form action="">
+            <form action="{% url 'ask' %}" method="POST" enctype="application/x-www-form-urlencoded">
+              {% csrf_token %}
               <div class="input-field">
                 <label for="title">Title</label>
-                <input type="text" id="title" placeholder="Your question's title...">
+                <input required value="{{ title }}" name="title" type="text" id="title" placeholder="Your question's title...">
               </div>
               <div class="input-field">
                 <label for="description" class="fixed-top textarea-label">Text</label>
-                <textarea type="text" id="description" rows="10" placeholder="What's your question?"></textarea>
+                <textarea required type="text" name="description" id="description" rows="10" placeholder="What's your question?">{{ description }}</textarea>
               </div>
-              <div class="input-field">
-                <label for="tags">Tags</label>
-                <input type="text" id="tags" placeholder="Your Question's tags...">
+              <div class="input-field-desc">
+                <div class="input-field" style="margin-bottom: 0;">
+                  <label for="tags">Tags</label>
+                  <input required value="{{ tags }}" type="text" name="tags" id="tags" placeholder="tag1, tag2, tag3">
+                </div>
+                <p style="font-size: 10px; margin-top: 0; text-align: center;">No more than 5 tags, tags must be separated by commas.</p>
               </div>
-              <p class="error">Your question must have a title.</p>
-              <button class="ask-button-question  ">Ask!</button>
+              {% if error %}
+              <p class="error">{{ error }}</p>
+              {% endif %}
+              <button class="ask-button-question">Ask!</button>
             </form>
           </div>
     </div>

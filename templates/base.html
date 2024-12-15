@@ -19,13 +19,20 @@
             <input type="text" placeholder="Search..." class="search-input px24"><button onclick="window.location.href='{% url 'ask' %}'" class="ask-button px24">Ask!</button>
           </div>
           <div class="user-data">
+            {% if request.user.is_authenticated %}
             <img height="55" width="55" src="https://placehold.co/200" alt="user image">
+            {% endif %}
             <div class="user-actions">
-              <p>Username</p>
+              {% if request.user.is_authenticated %}
+              <p>{{ request.user.username }}</p>
               <span>
                 <a href="{% url 'settings' %}">settings</a>
-                <a href="/logout">log out</a>
+                <a href="{% url 'logout'%}?continue={{ request.path }}">log out</a>
               </span>
+              {% else %}
+              <a href="{% url 'login' %}?continue={{ request.path }}">Log in</a>
+              <a href="{% url 'signup' %}">Sign up</a>
+              {% endif %}
             </div>
           </div>
       </div>

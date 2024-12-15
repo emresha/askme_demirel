@@ -11,28 +11,30 @@
         </div>
         <div class="login container">
             <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
                 <div class="input-field">
-                    <label for="login">Login</label>
-                    <input type="text" id="login">
+                    <label for="username">Username</label>
+                    <input required name="username" value="{{ request.user.username }}" type="text" id="username">
                 </div>
                 <div class="input-field">
                     <label for="email">Email</label>
-                    <input type="email" id="email">
+                    <input required name="email" value="{{ request.user.email }}" type="email" id="email">
                 </div>
                 <div class="input-field">
-                    <label for="nickname">Nickname</label>
-                    <input type="text" id="nickname">
-                </div>
-                <div class="input-field">
-                    <label for="password">Upload avatar</label>
+                    <label for="picture">Upload avatar</label>
                     <div class="file-image-container">
                         <img height="90" width="90" src="https://placehold.co/200">
                         <div class="file-load-container">
-                            <input type="file" accept=".jpg,.png,.jpeg" id="password">
+                            <input name="picture" type="file" accept=".jpg,.png,.jpeg" id="picture">
                             <button>Upload</button>
                         </div>
                     </div>
                 </div>
+                {% if error %}
+                <p class="error">
+                    {{ error }}
+                </p>
+                {% endif %}
                 <button class="login-button">Save changes</button>
             </form>
         </div>

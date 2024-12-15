@@ -40,10 +40,10 @@
             <div class="answers-container">
                 <h2>Answers</h2>
                 {% if not comments %}
-                <h4>Nobody has answered yet, so be the first!</h4>
+                <h4>Nobody has answered yet, so be first!</h4>
                 {% else %}
                 {% for comment in comments %}
-                <div class="answer">
+                <div class="answer" id="{{ comment.id }}">
                     <div class="avatar-and-description">
                         <div class="image-like-container">
                             <img height="80" width="80" src="https://placehold.co/500" alt="user image">
@@ -73,10 +73,23 @@
             {% endfor %}
             {% endif %}
             </div>
+            {% if request.user.is_authenticated %}
             <div class="user-answer">
-                <textarea rows="5" placeholder="Answer here..."></textarea>
-                <button class="answer-button">Answer!</button>
+                <form style="width: 100%;" action="{% url 'question' question.id %}" method="POST" enctype="application/x-www-form-urlencoded">
+                    {% csrf_token %}
+                    <textarea required name="content" rows="5" placeholder="Answer here..."></textarea>
+                    <button class="answer-button">Answer!</button>
+
+                </form>
             </div>
+            {% if error %}
+            <p class="error">
+                {{ error }}
+            </p>
+            {% endif %}
+            {% else %}
+            <h4>You must be logged in to answer. <a href="{% url 'login' %}?continue={{ request.path }}">Log In</a></h4>
+            {% endif %}
         </div>
 <!-- здесь теперь пагинатор, но он не будет работать, т.к. у страницы вопроса нет других страниц (пока, по крайней мере) -->
         {% include 'comments_paginator.html' %}

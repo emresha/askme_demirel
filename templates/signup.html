@@ -11,37 +11,36 @@
             <h1>Sign Up</h1>
         </div>
         <div class="login container">
-            <form action="" method="post" enctype="multipart/form-data">
+            <form action="{% url 'signup' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
                 <div class="input-field">
-                    <label for="login">Login</label>
-                    <input type="text" id="login">
+                    <label for="username">Login</label>
+                    <input required value="{{ login }}" name="username" type="text" id="username">
                 </div>
                 <div class="input-field">
                     <label for="email">Email</label>
-                    <input type="email" id="email">
-                </div>
-                <div class="input-field">
-                    <label for="nickname">Nickname</label>
-                    <input type="text" id="nickname">
+                    <input required value="{{ email }}" name="email" type="email" id="email">
                 </div>
                 <div class="input-field">
                     <label for="password">Password</label>
-                    <input type="password" id="password">
+                    <input required name="password" type="password" id="password">
                 </div>
                 <div class="input-field">
-                    <label for="password">Repeat Password</label>
-                    <input type="password" id="password">
+                    <label for="password_confirm">Repeat Password</label>
+                    <input required name="password_confirm" type="password" id="password_confirm">
                 </div>
                 <div class="input-field">
-                    <label for="password">Upload avatar</label>
+                    <label for="picture">Upload avatar</label>
                     <div class="file-load-container">
-                        <input type="file" accept=".jpg,.png,.jpeg" id="password">
+                        <input name="picture" type="file" accept=".jpg,.png,.jpeg" id="picture">
                         <button>Upload</button>
                     </div>
                 </div>
+                {% if error %}
                 <div class="error">
-                    <p>This email has already been registered.</p>
+                    <p>{{ error }}</p>
                 </div>
+                {% endif %}
                 <button class="login-button">Sign Up!</button>
                 <p style="text-align: center; margin-bottom: 0;">Have an account? <a href="{% url 'login' %}" class="login-link">Log In!</a></p>
             </form>
