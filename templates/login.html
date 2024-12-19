@@ -23,6 +23,10 @@
                     <label required for="password">Password</label>
                     <input type="password" name="password" id="password">
                 </div>
+                {% if request.GET.continue %}
+                <input type="hidden" name="continue" value="{{ request.GET.continue }}">
+                {% endif %}
+
                 {% if error %}
                 <div class="error">
                     <p>{{ error }}</p>

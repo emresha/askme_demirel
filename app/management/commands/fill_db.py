@@ -44,6 +44,8 @@ def create_comments(start, end, user_profiles):
         user = random.choice(user_profiles)
         post_comments = [Comment(user=user, post=post, is_correct=random.choice([True, False]), content=f'Comment {i}.{j}') for j in range(10)]
         comments.extend(post_comments)
+        post.comments_count = 10
+        post.save()
 
         if len(comments) >= batch_size:
             Comment.objects.bulk_create(comments)
@@ -69,7 +71,10 @@ def create_likes(user_profiles):
         while len(liked_posts) < 100:
             post = random.choice(posts)
             if post not in liked_posts:
-                post_likes.append(PostLike(user=user, post=post, value=random.choice([1, -1])))
+                value_res = random.choice([1, -1])
+                post_likes.append(PostLike(user=user, post=post, value=value_res))
+                post.like_count += value_res
+                post.save()
                 liked_posts.add(post)
 
         while len(liked_comments) < 100:
