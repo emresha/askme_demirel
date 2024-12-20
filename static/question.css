@@ -85,6 +85,10 @@
     cursor: pointer;
 }
 
+.liked {
+    color: #a6e0a0;
+}
+
 .question-tags {
     display: flex;
     flex-flow: row;

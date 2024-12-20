@@ -11,6 +11,21 @@ class SignUpForm(forms.Form):
     password = forms.CharField(max_length=32)
     password_confirm = forms.CharField(max_length=32)
     picture = forms.ImageField(required=False)
+    
+    def signup(form, request) -> dict:
+        from app.models import User, UserProfile
+        
+        if User.objects.filter(username=form.cleaned_data['username']).exists() and User.objects.filter(email=form.cleaned_data['email']).exists():
+            return {'error': 'User already exists or email is already in use', 'username': form.cleaned_data['username'], 'email': form.cleaned_data['email']}
+        
+        if form.cleaned_data['password'] == form.cleaned_data['password_confirm']:
+            user = User.objects.create_user(username=form.cleaned_data['username'], email=form.cleaned_data['email'], password=form.cleaned_data['password'])
+            user.save()
+            profile = UserProfile(user=user, avatar=form.cleaned_data.get('picture', None))
+            profile.save()
+            return {'error': None}
+        else:
+            return {'error': 'Passwords do not match', 'username': form.cleaned_data['username'], 'email': form.cleaned_data['email']}
 
 
 class QuestionForm(forms.Form):
@@ -58,7 +73,8 @@ class CommentForm(forms.Form):
         comment = Comment(post=post, user=request.user.profile, content=form.cleaned_data['content'])
         comment.save()
         
-        return {'error': None, 'comment_id': comment.id, 'last_page': return_pages_num(Comment.objects.get_comments_by_post(post), request)}
+        # removed request here
+        return {'error': None, 'comment_id': comment.id, 'last_page': return_pages_num(Comment.objects.get_comments_by_post(post))}
     
 class SettingsForm(forms.Form):
     
@@ -80,7 +96,9 @@ class SettingsForm(forms.Form):
         user.username = form.cleaned_data['username']
         user.email = form.cleaned_data['email']
         user.save()
-        user_profile.avatar = form.cleaned_data.get('picture', user_profile.avatar)
-        user_profile.save()    
+        if form.cleaned_data['picture'] is not None:
+            user_profile.avatar = form.cleaned_data.get('picture', user_profile.avatar)
+            user_profile.save()
+
         
         return {'error': None}    

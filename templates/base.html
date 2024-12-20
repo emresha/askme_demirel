@@ -20,7 +20,7 @@
           </div>
           <div class="user-data">
             {% if request.user.is_authenticated %}
-            <img height="55" width="55" src="https://placehold.co/200" alt="user image">
+            <img height="55" width="55" src="{{ MEDIA_URL }}{{ request.user.profile.avatar }}" alt="user image">
             {% endif %}
             <div class="user-actions">
               {% if request.user.is_authenticated %}

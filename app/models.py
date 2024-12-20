@@ -1,9 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from askme_demirel.settings import MEDIA_URL
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    avatar = models.ImageField(upload_to='uploads/', null=True, blank=True)
+    avatar = models.ImageField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -47,17 +48,26 @@ class Post(models.Model):
     def __str__(self):
         return self.header
 
+class PostLikeManager(models.Manager):
+    def get_likes_by_user(self, user):
+        return self.filter(user=user)
+    
+    def get_all(self):
+        return self
+
 class PostLike(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='post_likes')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
     created_at = models.DateTimeField(auto_now_add=True)
     value = models.IntegerField(choices=[(1, 'Like'), (-1, 'Dislike')], default=1)
 
+    objects = PostLikeManager()
+
     class Meta:
         unique_together = ('user', 'post')
         
     def __str__(self):
-        return f"{self.user.username} liked {self.post.header}"
+        return f"{self.user.user.username} liked {self.post.header}"
 
 class CommentManager(models.Manager):
     def get_comments_by_post(self, post):

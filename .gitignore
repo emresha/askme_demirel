@@ -5,6 +5,10 @@ __pycache__/
 
 .vscode
 
+# custom
+
+uploads/*
+
 # C extensions
 *.so
 

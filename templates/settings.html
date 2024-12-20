@@ -23,10 +23,9 @@
                 <div class="input-field">
                     <label for="picture">Upload avatar</label>
                     <div class="file-image-container">
-                        <img height="90" width="90" src="https://placehold.co/200">
+                        <img height="90" width="90" src="{{ MEDIA_URL }}{{ request.user.profile.avatar }}">
                         <div class="file-load-container">
                             <input name="picture" type="file" accept=".jpg,.png,.jpeg" id="picture">
-                            <button>Upload</button>
                         </div>
                     </div>
                 </div>

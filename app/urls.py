@@ -30,5 +30,10 @@ urlpatterns = [
     path('signup/', views.signup, name="signup"),
     path('question/<int:id>', views.question, name="question"),
     path('settings/', views.settings, name="settings"),
-    path('logout/', views.logout, name="logout")
+    path('logout/', views.logout, name="logout"),
+    path('toggle_like/', views.toggle_like, name='toggle_like'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    
