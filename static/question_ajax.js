@@ -1,3 +1,5 @@
+const POST_ID = document.querySelector('.common-container').dataset.postId;
+
 document.addEventListener('DOMContentLoaded', function() {
     function getCookie(name) {
         let cookieValue = null;
@@ -37,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.error) {
-                alert(data.error);
+                console.log(data.error);
             } else {
                 const likeCountDiv = document.querySelector(".question-number")
                 likeCountDiv.textContent = data.like_count;
@@ -84,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.error) {
-                alert(data.error);
+                console.log(data.error);
             } else {
                 const commentCard = button.closest('.answer');
                 const likeCountDiv = commentCard.querySelector('.number');
@@ -111,11 +113,56 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function handleCommentMarkCorrect(event) {
+        event.preventDefault();
+
+        const button = event.currentTarget;
+        const commentId = button.dataset.commentId;
+        const postId = POST_ID;
+
+        // console.log(commentId);
+
+        fetch("/mark_correct/", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken,
+            },
+            body: new URLSearchParams({
+                'post_id': postId,
+                'comment_id': commentId,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error(data.error);
+            } else {
+                const commentCard = button.closest('.answer');
+                const correctButton = commentCard.querySelector('.comment-checkbox');
+
+                if (data.correct) {
+                    correctButton.checked = true;
+                } else {
+                    correctButton.checked = false;
+                }
+
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
     document.querySelectorAll('.like-button, .dislike-button').forEach(function(button) {
         button.addEventListener('click', handleQuestionLikeDislike);
     });
 
     document.querySelectorAll('.comment-like-button, .comment-dislike-button').forEach(function(button) {
         button.addEventListener('click', handleCommentLikeDislike);
+    });
+
+    document.querySelectorAll('.comment-checkbox').forEach(function(input) {
+        input.addEventListener('click', handleCommentMarkCorrect);
     });
 });

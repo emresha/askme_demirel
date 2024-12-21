@@ -12,6 +12,72 @@ from app.forms import LoginForm, SignUpForm, QuestionForm, SettingsForm, Comment
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Exists, OuterRef, Value, BooleanField, IntegerField, Case, When, Subquery
 
+def annotate_questions(user_profile, questions) -> list:
+    like_subquery = PostLike.objects.filter(
+        user=user_profile,
+        post=OuterRef('pk')
+    ).values('value')[:1]
+
+    questions = questions.annotate(
+        like_value=Subquery(
+            like_subquery,
+            output_field=IntegerField()
+        )
+    )
+
+    questions = questions.annotate(
+        is_liked=Case(
+            When(like_value__isnull=False, then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        )
+    )
+
+    return questions
+
+def annotate_post(post, user_profile) -> dict:
+    like_subquery = PostLike.objects.filter(
+        user=user_profile,
+        post=post
+    ).values('value')[:1]
+
+    post = Post.objects.filter(id=post.id).annotate(
+        like_value=Subquery(
+            like_subquery,
+            output_field=IntegerField()
+        )
+    ).annotate(
+        is_liked=Case(
+            When(like_value__isnull=False, then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        )
+    ).first()
+
+    return post
+
+def annotate_comments(comments, user_profile) -> list:
+    like_subquery = CommentLike.objects.filter(
+        user=user_profile,
+        comment=OuterRef('pk')
+    ).values('value')[:1]
+
+    comments = comments.annotate(
+        like_value=Subquery(
+            like_subquery,
+            output_field=IntegerField()
+        )
+    )
+
+    comments = comments.annotate(
+        is_liked=Case(
+            When(like_value__isnull=False, then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        )
+    )
+
+    return comments
 
 def handle_question_like(user_profile, post, action) -> dict:
     post_like, _ = PostLike.objects.get_or_create(user=user_profile, post=post, defaults={'value': 0})
@@ -102,6 +168,32 @@ def paginate(objects_list, request, per_page=5):
 
 @require_POST
 @login_required
+def mark_correct(request):
+    comment_id = request.POST.get('comment_id')
+    post_id = request.POST.get('post_id')
+
+    if not comment_id or not post_id:
+        return JsonResponse({'error': 'Invalid parameters.'}, status=400)
+
+    try:
+        comment = Comment.objects.get(id=comment_id)
+        post = Post.objects.get(id=post_id)
+    except (Comment.DoesNotExist, Post.DoesNotExist):
+        return JsonResponse({'error': 'Comment or post not found.'}, status=404)
+
+    if post.user != request.user.profile:
+        return JsonResponse({'error': 'You are not the author of this post.'}, status=403)
+
+    if comment.post != post:
+        return JsonResponse({'error': 'Comment does not belong to this post.'}, status=400)
+
+    comment.is_correct = not comment.is_correct
+    comment.save()
+
+    return JsonResponse({'correct': comment.is_correct})
+
+@require_POST
+@login_required
 def toggle_question_like(request):
     post_id = request.POST.get('post_id')
     action = request.POST.get('action')
@@ -146,31 +238,8 @@ def index(request):
     if request.user.is_authenticated:
         user_profile = request.user.profile
 
-        like_subquery = PostLike.objects.filter(
-            user=user_profile,
-            post=OuterRef('pk')
-        ).values('value')[:1]
-
-        questions = questions.annotate(
-            like_value=Subquery(
-                like_subquery,
-                output_field=IntegerField()
-            )
-        )
-
-        questions = questions.annotate(
-            is_liked=Case(
-                When(like_value__isnull=False, then=Value(True)),
-                default=Value(False),
-                output_field=BooleanField(),
-            )
-        )
-    else:
-        questions = questions.annotate(
-            is_liked=Value(False, output_field=BooleanField()),
-            like_value=Value(0, output_field=IntegerField())
-        )
-
+        questions = annotate_questions(user_profile, questions)
+    
     paginated_questions = paginate(questions, request)
 
     return render(request, "index.html", context={'questions': paginated_questions})
@@ -266,42 +335,9 @@ def question(request, id):
     comments = Comment.objects.get_comments_by_post(post)
     
     if request.user.is_authenticated:
-        like_subquery = PostLike.objects.filter(
-            user=request.user.profile,
-            post_id=id
-        ).values('value')[:1]
-
-        post = Post.objects.filter(id=id).annotate(
-            like_value=Subquery(
-                like_subquery,
-                output_field=IntegerField()
-            )
-        ).annotate(
-            is_liked=Case(
-                When(like_value__isnull=False, then=Value(True)),
-                default=Value(False),
-                output_field=BooleanField(),
-            )
-        ).first()  
+        post = annotate_post(post, request.user.profile)
         
-        # annotate comments with like value
-        comment_like_subquery = CommentLike.objects.filter(
-            user=request.user.profile,
-            comment=OuterRef('pk')
-        ).values('value')[:1]
-        
-        comments = comments.annotate(
-            like_value=Subquery(
-                comment_like_subquery,
-                output_field=IntegerField()
-            )
-        ).annotate(
-            is_liked=Case(
-                When(like_value__isnull=False, then=Value(True)),
-                default=Value(False),
-                output_field=BooleanField(),
-            )
-        )
+        comments = annotate_comments(comments, request.user.profile)
         
         return render(request, "question.html", context={'question': post, 'id': id, 'comments': paginate(comments, request)})
     else:

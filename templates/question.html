@@ -8,7 +8,7 @@
 {% block content %}
         <div class="all-cards">
         <div class="cards container">
-            <div class="common-container">
+            <div class="common-container" data-post-id="{{ question.id }}">
                 <div class="description-actions">
                     <div class="avatar-and-description">
                         <div class="image-like-container">
@@ -94,15 +94,15 @@
                                 <div class="correct-checkbox">
                                     {% if comment.is_correct %}
                                         {% if question.user.id == request.user.id %}
-                                            <input type="checkbox" checked>
+                                            <input type="checkbox" data-comment-id="{{ comment.id }}" class="comment-checkbox" checked>
                                         {% else %}
-                                            <input type="checkbox" checked disabled>
+                                            <input type="checkbox" data-comment-id="{{ comment.id }}" class="comment-checkbox" checked disabled>
                                         {% endif %}
                                     {% else %}
                                         {% if question.user.id == request.user.id %}
-                                            <input type="checkbox">
+                                            <input type="checkbox" data-comment-id="{{ comment.id }}" class="comment-checkbox">
                                         {% else %}
-                                            <input type="checkbox" disabled>
+                                            <input type="checkbox" data-comment-id="{{ comment.id }}" class="comment-checkbox" disabled>
                                         {% endif %}
                                     {% endif %}
                                     <span>Correct</span>
