@@ -13,8 +13,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Exists, OuterRef, Value, BooleanField, IntegerField, Case, When, Subquery
 
 
-def handle_like(user_profile, post, action) -> dict:
-    post_like, created = PostLike.objects.get_or_create(user=user_profile, post=post, defaults={'value': 0})
+def handle_question_like(user_profile, post, action) -> dict:
+    post_like, _ = PostLike.objects.get_or_create(user=user_profile, post=post, defaults={'value': 0})
 
     if action == 'like':
         if post_like.value == 1:
@@ -47,6 +47,40 @@ def handle_like(user_profile, post, action) -> dict:
     
     return data
 
+def handle_comment_like(user_profile, comment, action) -> dict:
+    comment_like, _ = CommentLike.objects.get_or_create(user=user_profile, comment=comment, defaults={'value': 0})
+
+    if action == 'like':
+        if comment_like.value == 1:
+            comment_like.value = 0
+            comment.like_count -= 1
+        elif comment_like.value == -1:
+            comment_like.value = 1
+            comment.like_count += 2 
+        else:
+            comment_like.value = 1
+            comment.like_count += 1
+    elif action == 'dislike':
+        if comment_like.value == -1:
+            comment_like.value = 0
+            comment.like_count += 1
+        elif comment_like.value == 1:
+            comment_like.value = -1
+            comment.like_count -= 2
+        else:
+            comment_like.value = -1
+            comment.like_count -= 1
+
+    comment_like.save()
+    comment.save()
+
+    data = {
+        'like_count': comment.like_count,
+        'like_value': comment_like.value
+    }
+
+    return data
+
 
 """
 Функция пагинации
@@ -68,7 +102,7 @@ def paginate(objects_list, request, per_page=5):
 
 @require_POST
 @login_required
-def toggle_like(request):
+def toggle_question_like(request):
     post_id = request.POST.get('post_id')
     action = request.POST.get('action')
 
@@ -82,7 +116,27 @@ def toggle_like(request):
 
     user_profile = request.user.profile
 
-    data = handle_like(user_profile, post, action)
+    data = handle_question_like(user_profile, post, action)
+
+    return JsonResponse(data)
+
+@require_POST
+@login_required
+def toggle_comment_like(request):
+    comment_id = request.POST.get('comment_id')
+    action = request.POST.get('action')
+
+    if not comment_id or action not in ['like', 'dislike']:
+        return JsonResponse({'error': 'Invalid parameters.'}, status=400)
+
+    try:
+        comment = Comment.objects.get(id=comment_id)
+    except Comment.DoesNotExist:
+        return JsonResponse({'error': 'Comment not found.'}, status=404)
+
+    user_profile = request.user.profile
+
+    data = handle_comment_like(user_profile, comment, action)
 
     return JsonResponse(data)
 
@@ -160,7 +214,6 @@ def login(request):
             user = auth.authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             if user:
                 auth.login(request, user)
-                # print(request.GET)
                 if next:
                     return redirect(next)
                 return redirect('index')
@@ -177,7 +230,6 @@ def signup(request):
     
     if request.method == 'POST':
         form = SignUpForm(request.POST, request.FILES)
-        # print(form.errors)
         if form.is_valid():
             res = form.signup(request)
             if res['error'] is None:
@@ -194,6 +246,7 @@ def question(request, id):
         if request.user.is_authenticated:
             post = Post.objects.get_by_id(id)
             form = CommentForm(request.POST)
+                        
             if form.is_valid():
                 res = form.post(request, post.id)
                 if res['error'] is None:
@@ -206,28 +259,53 @@ def question(request, id):
             return redirect(f'/login?continue={request.path}')
     
     try:
-        question = Post.objects.get_by_id(id)
+        post = Post.objects.get_by_id(id)
     except Exception as e:
         raise Http404("Question not found.")
     
-    comments = Comment.objects.get_comments_by_post(question)
-    
+    comments = Comment.objects.get_comments_by_post(post)
     
     if request.user.is_authenticated:
-        did_user_like = PostLike.objects.filter(user=request.user.profile, post=question).exists()
-        if did_user_like:
-            like = PostLike.objects.get(user=request.user.profile, post=question).value
-        else:
-            like = 0
-            
-        liked_comments = Comment.objects.filter(
-            post=question,
-            likes__user=request.user.profile
-        ).distinct()
-    
-        return render(request, "question.html", context={'question': question, 'id': id, 'comments': paginate(comments, request), 'did_user_like': did_user_like, 'like': like, 'liked_comments': liked_comments})
+        like_subquery = PostLike.objects.filter(
+            user=request.user.profile,
+            post_id=id
+        ).values('value')[:1]
+
+        post = Post.objects.filter(id=id).annotate(
+            like_value=Subquery(
+                like_subquery,
+                output_field=IntegerField()
+            )
+        ).annotate(
+            is_liked=Case(
+                When(like_value__isnull=False, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField(),
+            )
+        ).first()  
+        
+        # annotate comments with like value
+        comment_like_subquery = CommentLike.objects.filter(
+            user=request.user.profile,
+            comment=OuterRef('pk')
+        ).values('value')[:1]
+        
+        comments = comments.annotate(
+            like_value=Subquery(
+                comment_like_subquery,
+                output_field=IntegerField()
+            )
+        ).annotate(
+            is_liked=Case(
+                When(like_value__isnull=False, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField(),
+            )
+        )
+        
+        return render(request, "question.html", context={'question': post, 'id': id, 'comments': paginate(comments, request)})
     else:
-        return render(request, "question.html", context={'question': question, 'id': id, 'comments': paginate(comments, request)})
+        return render(request, "question.html", context={'question': post, 'id': id, 'comments': paginate(comments, request)})
 
 
 @login_required(redirect_field_name='continue')

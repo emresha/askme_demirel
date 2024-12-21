@@ -19,20 +19,18 @@
                             {% endif %}
                             <div class="likes">
                                 {% if request.user.is_authenticated %}
-                                <div class="number">{{question.like_count}}</div>
+                                <div class="number question-number">{{question.like_count}}</div>
                                 <div class="arrows-container">
-                                    {% if question in questions_liked_by_user %}
-                                        {% if like == 1 %}
-                                            <div class="arrow liked">▲</div>
-                                            <div class="arrow">▼</div>
-                                        {% else %}
-                                            <div class="arrow">▲</div>
-                                            <div class="arrow liked">▼</div>
-                                        {% endif %}
-                                    {% else %}
-                                    <div class="arrow">▲</div>
-                                    <div class="arrow">▼</div>
-                                    {% endif %}
+                                    <button class="arrow-button like-button {% if question.like_value == 1 %}liked{% endif %}" 
+                                            data-post-id="{{ question.id }}" 
+                                            data-action="like">
+                                        ▲
+                                    </button>
+                                    <button class="arrow-button dislike-button {% if question.like_value == -1 %}liked{% endif %}" 
+                                            data-post-id="{{ question.id }}" 
+                                            data-action="dislike">
+                                        ▼
+                                    </button>
                                 </div>
                                 {% else %}
                                 <div class="number" style="display: flex; width: 100%; justify-content: center; padding: 10px">{{ question.like_count }}</div>
@@ -61,6 +59,7 @@
                 <h4>Nobody has answered yet, so be first!</h4>
                 {% else %}
                 {% for comment in comments %}
+                <!-- <h1> {{ comment.like_value }} </h1> -->
                 <div class="answer" id="{{ comment.id }}">
                     <div class="avatar-and-description">
                         <div class="image-like-container">
@@ -70,11 +69,23 @@
                             <img height="80" width="80" src="https://placehold.co/500" alt="user image">
                             {% endif %}
                             <div class="likes">
-                                <div class="number">0</div>
+                                {% if request.user.is_authenticated %}
+                                <div class="number">{{ comment.like_count }}</div>
                                 <div class="arrows-container">
-                                    <div class="arrow">▲</div>
-                                    <div class="arrow">▼</div>
+                                    <button class="arrow-button comment-like-button {% if comment.like_value == 1 %}liked{% endif %}" 
+                                            data-comment-id="{{ comment.id }}" 
+                                            data-action="like">
+                                        ▲
+                                    </button>
+                                    <button class="arrow-button comment-dislike-button {% if comment.like_value == -1 %}liked{% endif %}" 
+                                            data-comment-id="{{ comment.id }}" 
+                                            data-action="dislike">
+                                        ▼
+                                    </button>
                                 </div>
+                                {% else %}
+                                <div class="number" style="display: flex; width: 100%; justify-content: center; padding: 10px">{{ comment.like_count }}</div>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="answer-actions">
@@ -125,4 +136,6 @@
         </div>
         </div>
     </div>
+
+    <script src="{% static 'question_ajax.js' %}"></script>
 {% endblock %}

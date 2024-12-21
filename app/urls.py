@@ -31,7 +31,8 @@ urlpatterns = [
     path('question/<int:id>', views.question, name="question"),
     path('settings/', views.settings, name="settings"),
     path('logout/', views.logout, name="logout"),
-    path('toggle_like/', views.toggle_like, name='toggle_like'),
+    path('toggle_question_like/', views.toggle_question_like, name='toggle_like'),
+    path('toggle_comment_like/', views.toggle_comment_like, name='toggle_answer_like'),
 ]
 
 if settings.DEBUG:
