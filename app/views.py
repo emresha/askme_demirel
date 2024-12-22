@@ -247,6 +247,11 @@ def index(request):
 
 def hot(request):
     hot_questions = Post.objects.get_hot()
+    
+    if request.user.is_authenticated:
+        user_profile = request.user.profile
+
+        hot_questions = annotate_questions(user_profile, hot_questions)
         
     return render(request, "index.html", context={'questions': paginate(hot_questions, request), 'hot': True})
 
