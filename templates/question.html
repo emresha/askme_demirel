@@ -93,13 +93,13 @@
                                 <p>{{ comment.content }}</p>
                                 <div class="correct-checkbox">
                                     {% if comment.is_correct %}
-                                        {% if question.user.id == request.user.id %}
+                                        {% if is_author %}
                                             <input type="checkbox" data-comment-id="{{ comment.id }}" class="comment-checkbox" checked>
                                         {% else %}
                                             <input type="checkbox" data-comment-id="{{ comment.id }}" class="comment-checkbox" checked disabled>
                                         {% endif %}
                                     {% else %}
-                                        {% if question.user.id == request.user.id %}
+                                        {% if is_author %}
                                             <input type="checkbox" data-comment-id="{{ comment.id }}" class="comment-checkbox">
                                         {% else %}
                                             <input type="checkbox" data-comment-id="{{ comment.id }}" class="comment-checkbox" disabled>

@@ -206,10 +206,11 @@ def question(request, id):
     
     if request.user.is_authenticated:
         post = annotate_post(post, request.user.profile)
-        
         comments = annotate_comments(comments, request.user.profile)
         
-        return render(request, "question.html", context={'question': post, 'id': id, 'comments': paginate(comments, request)})
+        is_author = str(request.user) == str(post.user)
+        
+        return render(request, "question.html", context={'question': post, 'id': id, 'comments': paginate(comments, request), 'is_author': is_author})
     else:
         return render(request, "question.html", context={'question': post, 'id': id, 'comments': paginate(comments, request)})
 
