@@ -43,6 +43,8 @@ class QuestionForm(forms.Form):
             return {'error': 'Too many tags'}
         if len(tags) == 0:
             return {'error': 'Question must have tags'}
+
+        tags = [i.lower() for i in tags]
         
         for tag in tags:
             tag = tag.strip()
