@@ -15,18 +15,32 @@
             <div class="avatar-and-description">
                 <div class="image-like-container">
                 <img height="80" width="80" src="https://placehold.co/500" alt="user image">
-                    <div class="likes">
-                        <div class="number">{{question.like_count}}</div>
-                        <div class="arrows-container">
-                            <div class="arrow">▲</div>
-                            <div class="arrow">▼</div>
-                        </div>
+                <div class="likes">
+                    {% if request.user.is_authenticated %}
+                    <div class="number">{{ question.like_count }}</div>
+                    <div class="arrows-container">
+                        <button class="arrow-button like-button {% if question.like_value == 1 %}liked{% endif %}" 
+                                data-post-id="{{ question.id }}" 
+                                data-action="like">
+                            ▲
+                        </button>
+                        <button class="arrow-button dislike-button {% if question.like_value == -1 %}liked{% endif %}" 
+                                data-post-id="{{ question.id }}" 
+                                data-action="dislike">
+                            ▼
+                        </button>
                     </div>
+                    {% else %}
+                    <div class="number" style="display: flex; width: 100%; justify-content: center; padding: 10px">
+                        {{ question.like_count }}
+                    </div>
+                    {% endif %}
+                </div>
                 </div>
                 <div class="description-actions">
                     <div class="description">
                         <h2>{{question.header}}</h2>
-                        <p>{{question.description}}</p>
+                        <p>{{question.description|truncatechars:256 }}</p>
                     </div>
                     <div class="actions-and-tags">
                         <a href="{% url 'question' id=question.id %}">Answer ({{ question.comments_count }})</a>
@@ -45,4 +59,6 @@
         {% endfor %}
         {% include 'paginator.html' %}
       </div>
+<script src="{% static 'index_ajax.js' %}"></script>
 {% endblock %}
+

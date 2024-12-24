@@ -125,6 +125,11 @@ def tag(request, tag_name):
     if not tag_questions:
         raise Http404("Tag not found")
     
+    if request.user.is_authenticated:
+        user_profile = request.user.profile
+
+        tag_questions = annotate_questions(user_profile, tag_questions)
+    
     return render(request, "tag.html", context={'questions': paginate(tag_questions, request), 'tag': tag_name})
 
 @login_required(redirect_field_name='continue')

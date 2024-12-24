@@ -49,7 +49,7 @@
                 <div class="description-actions">
                     <div class="description">
                         <h2>{{question.header}}</h2>
-                        <p>{{question.description}}</p>
+                        <p>{{question.description|truncatechars:256}}</p>
                     </div>
                     <div class="actions-and-tags">
                         <a href="{% url 'question' id=question.id %}">Answer ({{ question.comments_count }})</a>
